@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NA-TECH — Electronics Store (Pakistan)</title>
+  <style>
+    :root{--accent:#0ea5a3;--bg:#f6f8fa;--card:#ffffff;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0;background:var(--bg);color:#111}
+    header{background:linear-gradient(90deg,#06283D 0%, #0EA5A3 100%);color:#fff;padding:16px 20px}
+    .container{max-width:1200px;margin:20px auto;padding:0 16px}
+    .brand{display:flex;align-items:center;gap:16px}
+    .brand img{height:90px;width:auto;border-radius:12px;object-fit:contain} /* ✅ Bigger logo */
+    .brand-title{font-weight:700;font-size:28px}
+    .search{margin-left:auto;display:flex;gap:8px}
+    .search input{padding:8px 12px;border-radius:8px;border:0;min-width:220px}
+    .hero{display:flex;align-items:center;justify-content:space-between;margin:20px 0;flex-wrap:wrap}
+    .hero .left{max-width:64%}
+    .banner{background:linear-gradient(90deg, rgba(14,165,163,0.12), rgba(6,40,61,0.12));padding:18px;border-radius:12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;margin-top:18px}
+    .card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(2,6,23,0.06);display:flex;flex-direction:column}
+    .card img{width:100%;height:160px;object-fit:cover;border-radius:8px}
+    .card h3{font-size:16px;margin:10px 0 6px}
+    .price-row{display:flex;align-items:center;gap:8px}
+    .old{color:var(--muted);text-decoration:line-through;font-size:14px}
+    .new{font-weight:700}
+    .badge{background:var(--accent);color:#fff;padding:6px 8px;border-radius:8px;font-size:13px;margin-left:auto}
+    .btn{flex:1;padding:10px;border-radius:8px;border:0;cursor:pointer}
+    .btn-primary{background:linear-gradient(90deg,#0ea5a3,#067287);color:#fff}
+    .btn-outline{background:transparent;border:1px solid #e5e7eb}
+    footer{padding:36px 0;color:var(--muted);text-align:center;margin-top:28px}
+    .topbar{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <img src="logo.jpg" alt="NA-TECH Logo" />
+        <div class="brand-title">NA-TECH</div>
+      </div>
+      <div class="search">
+        <input id="searchInput" placeholder="Search electronics..." oninput="applyFilter()" />
+        <button class="btn btn-primary" onclick="applyFilter()">Search</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="left">
+        <div class="banner">
+          <h1 style="margin:0 0 6px">Electronics Sale — 10% OFF</h1>
+          <p style="margin:0;color:var(--muted)">Shop smartphones, laptops, cameras, TVs, audio, and accessories. All prices below include a 10% discount (Sep 6).</p>
+          <h2 style="margin:0 0 6px">6 Sep Independence Day Sale Live Now.</h2>
+        </div>
+
+        <!-- ✅ Filters with live update -->
+        <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
+          <input id="minPrice" placeholder="Min price (PKR)" 
+                 style="padding:8px;border-radius:8px;border:1px solid #e5e7eb" 
+                 oninput="applyFilter()" />
+
+          <input id="maxPrice" placeholder="Max price (PKR)" 
+                 style="padding:8px;border-radius:8px;border:1px solid #e5e7eb" 
+                 oninput="applyFilter()" />
+
+          <select id="category" style="padding:8px;border-radius:8px;border:1px solid #e5e7eb" 
+                  onchange="applyFilter()">
+            <option value="all">All categories</option>
+            <option value="phone">Phones</option>
+            <option value="laptop">Laptops</option>
+            <option value="camera">Cameras</option>
+            <option value="audio">Audio</option>
+            <option value="tv">TVs</option>
+            <option value="watch">Watches</option>
+            <option value="accessory">Accessories</option>
+            <option value="tablet">Tablets</option>
+          </select>
+
+          <button class="btn btn-outline" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
+
+      <div style="width:300px;text-align:right">
+        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&auto=format&fit=crop" alt="hero" style="width:100%;border-radius:12px;object-fit:cover;max-height:180px"/>
+      </div>
+    </section>
+
+    <section>
+      <h2 style="margin:8px 0">Featured products</h2>
+      <div id="products" class="grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong>NA-TECH</strong>
+          <div style="font-size:13px">Serving customers across Pakistan • Secure payments • Easy returns</div>
+        </div>
+        <div style="font-size:13px;color:var(--muted)">© NA-TECH • All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const productsData = [
+      {id:1,name:'Galaxy Z Ultra - 256GB',category:'phone',price:249999,desc:'Flagship foldable smartphone',img:'galaxy_z_ultra.jpg'},
+      {id:2,name:'Acer Swift 5 - i7',category:'laptop',price:189999,desc:'Slim ultrabook',img:'acer_swift_5.jpg'},
+      {id:3,name:'Sony Alpha Mirrorless',category:'camera',price:159999,desc:'Compact mirrorless camera',img:'sony_alpha_mirrorless.jpg'},
+      {id:4,name:'Beats Studio Wireless',category:'audio',price:29999,desc:'Noise cancelling headphones',img:'beats_studio_wireless.jpg'},
+      {id:5,name:'iPhone Pro Max - 512GB',category:'phone',price:299999,desc:'Latest flagship iPhone',img:'iphone_pro_max.jpg'},
+      {id:6,name:'Dell G15 Gaming',category:'laptop',price:219999,desc:'Gaming laptop with RTX',img:'dell_g15_gaming.jpg'},
+      {id:7,name:'GoPro Action Cam',category:'camera',price:45999,desc:'Rugged action camera',img:'gopro_action_cam.jpg'},
+      {id:8,name:'Bluetooth Speaker',category:'audio',price:8999,desc:'Portable speaker',img:'bluetooth_speaker.jpg'},
+      {id:9,name:'Samsung Smart TV 55"',category:'tv',price:124999,desc:'4K UHD Smart TV',img:'samsung_smart_tv.jpg'},
+      {id:10,name:'Apple Watch Series 9',category:'watch',price:109999,desc:'Smart fitness watch',img:'apple_watch_series9.jpg'},
+      {id:11,name:'Canon EOS DSLR',category:'camera',price:139999,desc:'Professional DSLR',img:'canon_eos_dslr.jpg'},
+      {id:12,name:'HP Spectre x360',category:'laptop',price:229999,desc:'Convertible laptop',img:'hp_spectre_x360.jpg'},
+      {id:13,name:'Logitech Gaming Mouse',category:'accessory',price:9999,desc:'RGB gaming mouse',img:'logitech_gaming_mouse.jpg'},
+      {id:14,name:'Bose Soundbar',category:'audio',price:79999,desc:'Cinematic soundbar',img:'bose_soundbar.jpg'},
+      {id:15,name:'Huawei MatePad Pro',category:'tablet',price:84999,desc:'Powerful Android tablet',img:'huawei_matepad_pro.jpg'}
+    ];
+
+    const DISCOUNT_PERCENT = 10;
+    function formatPKR(n){return n.toLocaleString('en-PK');}
+    function discounted(price){return Math.round(price * (1 - DISCOUNT_PERCENT/100));}
+
+    function render(products){
+      const container = document.getElementById('products');
+      container.innerHTML = '';
+      products.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img loading="lazy" src="${p.img}" alt="${p.name}" />
+          <h3>${p.name}</h3>
+          <div style="font-size:13px;color:var(--muted)">${p.desc}</div>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+            <div class="old">PKR ${formatPKR(p.price)}</div>
+            <div class="new">PKR ${formatPKR(discounted(p.price))}</div>
+            <div class="badge">${DISCOUNT_PERCENT}% OFF</div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-outline" onclick="addToCart(${p.id})">Add to Cart</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function applyFilter(){
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const min = parseFloat(document.getElementById('minPrice').value) || 0;
+      const max = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+      const cat = document.getElementById('category').value;
+      const filtered = productsData.filter(p => {
+        const matchesQ = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+        const matchesPrice = p.price >= min && p.price <= max;
+        const matchesCat = cat === 'all' || p.category === cat;
+        return matchesQ && matchesPrice && matchesCat;
+      });
+      render(filtered);
+    }
+
+    function resetFilters(){
+      document.getElementById('searchInput').value = '';
+      document.getElementById('minPrice').value = '';
+      document.getElementById('maxPrice').value = '';
+      document.getElementById('category').value = 'all';
+      render(productsData);
+    }
+
+    function addToCart(id){
+      const p = productsData.find(x=>x.id===id);
+      alert(p.name + ' added to cart. Discounted price: PKR ' + formatPKR(discounted(p.price)) );
+    }
+
+    // Initial render
+    render(productsData);
+  </script>
+</body>
+</html>

@@ -55,7 +55,7 @@ Clone the repository
 https://github.com/adeenzahid1122-cell/NA-TECH.git
 
 
-Open the project folder
+Open the project
 
 https://adeenzahid1122-cell.github.io/NA-TECH/
 
